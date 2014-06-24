@@ -1,0 +1,60 @@
+{
+  "variables": {
+    "account_id": "",
+    "aws_access_key_id": "",
+    "aws_secret_key": "",
+    "s3_bucket": "",
+    "x509_cert_path": "",
+    "x509_key_path": ""
+  },
+
+  "builders": [
+    { "type": "amazon-instance",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "source_ami": "ami-6f969506",
+      "instance_type": "m1.xlarge",
+      "ssh_username": "ubuntu",
+      "ami_name": "packer-instance_store_nginx_{{timestamp}}",
+
+      "bundle_vol_command": "sudo -n env EC2_AMITOOL_HOME=/usr/local/ec2/ec2-ami-tools /usr/local/ec2/ec2-ami-tools/bin/ec2-bundle-vol -k {{.KeyPath}}  -u {{.AccountId}} -c {{.CertPath}} -r {{.Architecture}} -e {{.PrivatePath}}/* -d {{.Destination}} -p {{.Prefix}} --batch --no-filter",
+      "bundle_upload_command": "sudo -n env EC2_AMITOOL_HOME=/usr/local/ec2/ec2-ami-tools /usr/local/ec2/ec2-ami-tools/bin/ec2-upload-bundle -b {{.BucketName}} -m {{.ManifestPath}} -a {{.AccessKey}} -s {{.SecretKey}} -d {{.BundleDirectory}} --batch --retry",
+
+      "account_id": "{{user `account_id`}}",
+      "s3_bucket": "{{user `s3_bucket`}}",
+      "x509_cert_path": "{{user `x509_cert_path`}}",
+      "x509_key_path": "{{user `x509_key_path`}}"
+    },
+
+    { "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "source_ami": "ami-2b0b1442",
+      "instance_type": "m1.xlarge",
+      "ssh_username": "ubuntu",
+      "ami_name": "packer-ebs_nginx_{{timestamp}}"
+    }
+  ],
+
+  "provisioners" : [ 
+    { "type": "chef-solo",
+      "cookbook_paths": [ "../vendor/cookbooks" ],
+      "run_list": [ "packer::default" ]
+    },
+
+    { "type": "shell",
+      "inline": [
+        "sudo apt-get install -y ruby unzip kpartx",
+        "wget http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip",
+        "sudo mkdir -p /usr/local/ec2",
+        "sudo unzip ec2-ami-tools.zip -d /usr/local/ec2",
+        "sudo mv /usr/local/ec2/ec2-ami-tools-* /usr/local/ec2/ec2-ami-tools/"
+      ],
+      "only": [ "amazon-instance" ]
+    }
+
+  ]
+
+}
