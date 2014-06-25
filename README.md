@@ -2,7 +2,7 @@ chef-ami-factory
 ================
 This is a demo on how to set up an AMI factory using [Chef](http://www.getchef.com/), [Berkshelf](http://berkshelf.com), and [Packer](http://www.packer.io) to address just-in-time configuration management challenges like auto-scaling.  It is **_not_** a recommended practice to generate static images as a substitute for configuration management.
 
-For guidelines on how to use pre-loaded AMIs with configuration management, check out this [video](http://www.getchef.com/blog/chefconf-talks/cooking-with-chef-and-amazons-cloud-formation-jeremy-przygode/)  on using pre-loaded AMIs with CloudFormation or [slides](http://null) from the talk for which this demo was written.  Work in this repo is based upon this [tutorial](http://engineering.cotap.com/post/78783269747/hello-world-using-packer-chef-and-berkshelf-on-ec2).
+For guidelines on how to use pre-loaded AMIs with configuration management, check out this [video](http://www.getchef.com/blog/chefconf-talks/cooking-with-chef-and-amazons-cloud-formation-jeremy-przygode/)  on using pre-loaded AMIs with CloudFormation or [slides](http://bit.ly/chef-ami-factory) from the talk for which this demo was written.  Work in this repo is based upon this [tutorial](http://engineering.cotap.com/post/78783269747/hello-world-using-packer-chef-and-berkshelf-on-ec2).
 
 -----
 Requirements
